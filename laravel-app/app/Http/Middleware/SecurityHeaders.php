@@ -28,9 +28,16 @@ class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
-        // Content Security Policy (CSP) - Basic policy
-        // Adjust based on your application's needs
-        $csp = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self';";
+        // Content Security Policy (CSP) - Allow Vite assets and HTTPS resources
+        // style-src-elem and script-src-elem needed for Vite-generated assets
+        $csp = "default-src 'self'; " .
+               "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " .
+               "script-src-elem 'self' 'unsafe-inline'; " .
+               "style-src 'self' 'unsafe-inline'; " .
+               "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; " .
+               "img-src 'self' data: https:; " .
+               "font-src 'self' data: https://fonts.gstatic.com https://fonts.googleapis.com; " .
+               "connect-src 'self';";
         $response->headers->set('Content-Security-Policy', $csp);
 
         return $response;
