@@ -16,6 +16,11 @@ Route::post('/stripe/webhook', [StripeWebhookController::class, 'handleWebhook']
     ->name('stripe.webhook')
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class]);
 
+// Health check route (for Render)
+Route::get('/up', function () {
+    return response()->json(['status' => 'ok'], 200);
+})->name('health');
+
 // Public routes
 Route::get('/', [HomeController::class, 'landing'])->name('home');
 
