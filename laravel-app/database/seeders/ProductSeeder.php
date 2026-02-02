@@ -227,7 +227,8 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $product) {
-            Product::create($product);
+            // Ensure products are created with 'active' status
+            Product::create(array_merge($product, ['status' => 'active']));
         }
 
         $this->command->info('Created ' . count($products) . ' sample products.');

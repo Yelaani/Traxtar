@@ -39,7 +39,8 @@ class ProductShop extends Component
 
     public function render()
     {
-        $query = Product::query();
+        // Only show active products on the shop page
+        $query = Product::query()->active();
 
         // Apply category filter
         if ($this->category !== 'all') {

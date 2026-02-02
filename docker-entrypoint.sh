@@ -42,6 +42,18 @@ php artisan migrate --force || {
     echo "WARNING: Migrations failed, but continuing..."
 }
 
+# Seed database with products (only if SEED_DATABASE env var is set to "true")
+# This prevents re-seeding on every deployment
+if [ "$SEED_DATABASE" = "true" ]; then
+    echo "Seeding database with products..."
+    php artisan db:seed --class=ProductSeeder --force || {
+        echo "WARNING: Database seeding failed, but continuing..."
+    }
+    echo "✓ Database seeded successfully"
+else
+    echo "Skipping database seed (set SEED_DATABASE=true to seed on next deployment)"
+fi
+
 # Clear all caches first (important for production)
 echo "Clearing caches..."
 php artisan config:clear || true
