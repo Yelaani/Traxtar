@@ -30,20 +30,20 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Install Node dependencies and build assets
 RUN npm ci && npm run build
 
+# Copy entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Generate key and cache (will be overridden by env vars, but needed for build)
-RUN php artisan key:generate --force || true
+# Create storage link (will be recreated on startup if needed)
 RUN php artisan storage:link || true
-RUN php artisan config:cache || true
-RUN php artisan route:cache || true
-RUN php artisan view:cache || true
 
 # Expose port
 EXPOSE 8000
 
-# Start command
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# Use entrypoint script
+ENTRYPOINT ["docker-entrypoint.sh"]
