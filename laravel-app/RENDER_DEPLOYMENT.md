@@ -89,6 +89,14 @@ APP_ENV=production
 APP_KEY=base64:... (will be generated)
 APP_DEBUG=false
 APP_URL=https://your-app-name.onrender.com
+```
+
+**⚠️ CRITICAL: APP_URL Configuration**
+- `APP_URL` MUST be set to your actual Render service URL (e.g., `https://traxtar-1.onrender.com`)
+- This is essential for Vite assets (CSS/JS) to load correctly
+- If `APP_URL` is incorrect or missing, the UI will be broken (no styles, broken layout)
+- After deployment, check your Render service URL and update `APP_URL` to match exactly
+- The URL should include `https://` and have no trailing slash
 
 LOG_CHANNEL=stack
 LOG_LEVEL=error

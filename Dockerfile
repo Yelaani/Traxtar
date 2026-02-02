@@ -30,6 +30,13 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 # Install Node dependencies and build assets
 RUN npm ci && npm run build
 
+# Verify Vite build completed successfully
+RUN if [ ! -f "public/build/manifest.json" ]; then \
+        echo "ERROR: Vite build failed - manifest.json not found!" && exit 1; \
+    else \
+        echo "✓ Vite assets built successfully"; \
+    fi
+
 # Copy entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
@@ -39,8 +46,9 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
-# Create storage link (will be recreated on startup if needed)
-RUN php artisan storage:link || true
+# Note: Do NOT cache config/routes/views during build
+# These need environment variables that are only available at runtime
+# Config caching will happen in docker-entrypoint.sh at container startup
 
 # Expose port
 EXPOSE 8000
